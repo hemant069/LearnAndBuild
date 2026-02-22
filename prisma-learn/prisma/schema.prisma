@@ -21,6 +21,7 @@ model User {
 }
 
 model Operation {
-  id   Int    @id @default(autoincrement())
-  task String
+  id     Int     @id @default(autoincrement())
+  task   String
+  isdone Boolean @default(false)
 }
