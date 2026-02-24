@@ -1,8 +1,8 @@
 import express from "express";
-
+import { env } from "./config/env";
 
 const app=express();
-const PORT =8080;
+
 
 
 app.use(express.json());
@@ -13,7 +13,7 @@ app.get('/check',(req,res)=>{
     return res.send("Hello world")
 })
 
-app.listen(PORT,()=>console.log("server is started",PORT));
+app.listen(env.PORT,()=>console.log("server is started",env.PORT));
 
 
 
