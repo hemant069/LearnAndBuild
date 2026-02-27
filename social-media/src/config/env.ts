@@ -13,7 +13,7 @@ const envSchema=z.object({
     DATABASE_URL:z.string().url(),
     // jwt 
     JWT_SECRET:z.string().min(32,'JWT SECRET MUST BE AT LEAST 32 CHAR'),
-    JWT_EXPIRE:z.string().default('3d'),
+    JWT_EXPIRE:z.string(),
     //file upload
 
     CLOUDINARY_CLOUD_NAME:z.string().optional(),
