@@ -19,8 +19,8 @@ model User {
   username  String
   email     String    @unique
   password  String
-  bio       String
-  avtaar    String
+  bio       String?
+  avtaar    String?
   posts     Post[]
   following Follow[]  @relation("UserFollowings")
   follower  Follow[]  @relation("UsersFollowers")

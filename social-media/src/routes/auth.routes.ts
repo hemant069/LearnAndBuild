@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { loginroute, siguproute } from "../services/auth.services";
+import { sigupController } from "../controllers/auth.controllers";
 
 const authrouter=Router();
 
-authrouter.post('/signup',siguproute)
-authrouter.post('/login',loginroute)
+authrouter.post('/signup',sigupController)
+
 
 export default authrouter
