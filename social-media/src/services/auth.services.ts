@@ -7,39 +7,37 @@ import { errorResponse } from "../utils/response.util";
 import { signupTypes } from "../types/auth.types";
 import { ServiceResult } from "../types/result.types";
 
-export const sigupService=async({name,username,password,email}:signupTypes):Promise<ServiceResult<any>>=>{
+export const sigupService = async ({ name, username, password, email }: signupTypes): Promise<ServiceResult<any>> => {
 
-try {
-    
+  try {
+    // need some changes
+    const existingUser = await prisma.user.findFirst({ where: { email } })
 
-    
-    
-    const existingUser= await prisma.user.findFirst({where:{email}})
-
-    if(existingUser){
-      return  {success:false,message:"user is already exist",statusCode:400};
+    if (existingUser) {
+      return { success: false, message: "user is already exist", statusCode: 400 };
     }
 
-    console.log(name,username,password)
-    const haspassword=await hashPassword(password)
+
+    const haspassword = await hashPassword(password)
 
     console.log(hashPassword)
 
-    const newuser=await prisma.user.create({
-        data:{name,username,password:haspassword,email}
+    const newuser = await prisma.user.create({
+      data: { name, username, password: haspassword, email }
     })
-    
-    return {success:true,data:newuser}
-        
-    } catch (error) {
 
-       return { success: false, message: "Internal server error", statusCode: 500 };
-    }
-        
-    }
+    return { success: true, data: newuser }
+
+  }
+  catch (error) {
+
+    return { success: false, message: "Internal server error", statusCode: 500 };
+  }
 
 }
 
-export const loginroute=()=>{
+
+
+export const loginroute = () => {
 
 }

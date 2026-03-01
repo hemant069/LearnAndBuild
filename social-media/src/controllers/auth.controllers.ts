@@ -15,8 +15,8 @@ try {
         return errorResponse(res,parsedData.error,"something went wrong",500)
     }
 
-  const {name,username,password,email}=parsedData.data
-  const user=await sigupService(name,username,password,email)
+  
+  const user=await sigupService(parsedData.data)
 
   console.log(user)
 
