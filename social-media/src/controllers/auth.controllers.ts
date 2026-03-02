@@ -6,21 +6,24 @@ import { sigupService } from "../services/auth.services";
 
 export const sigupController=async(req:Request,res:Response)=>{
 
-
 try {
     
     const parsedData=signupSchema.safeParse(req.body);
 
     if(!parsedData.success){
-        return errorResponse(res,parsedData.error,"something went wrong",500)
+        return errorResponse(res,parsedData.error,"Validation failed",400)
     }
 
-  
-  const user=await sigupService(parsedData.data)
+    const user=await sigupService(parsedData.data)
 
-  console.log(user)
+    if(user.success){
+        return successResponse(res,user.data,"User created successfully",201)
+    }
+
+    return errorResponse(res,null,user.message,user.statusCode)
 
 } catch (error) {
-    
+    console.error("Signup controller error:", error)
+    return errorResponse(res,error,"Internal server error",500)
 }
 }

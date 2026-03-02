@@ -1,16 +1,13 @@
-import { Request, Response } from "express"
-import { signupSchema } from "../validators/auth.validators"
+
 import { prisma } from "../config/database";
-import { safeParse } from "zod/v4";
 import { hashPassword } from "../utils/password.util";
-import { errorResponse } from "../utils/response.util";
 import { signupTypes } from "../types/auth.types";
 import { ServiceResult } from "../types/result.types";
 
 export const sigupService = async ({ name, username, password, email }: signupTypes): Promise<ServiceResult<any>> => {
 
   try {
-    // need some changes
+    
     const existingUser = await prisma.user.findFirst({ where: { email } })
 
     if (existingUser) {
@@ -20,7 +17,7 @@ export const sigupService = async ({ name, username, password, email }: signupTy
 
     const haspassword = await hashPassword(password)
 
-    console.log(hashPassword)
+    console.log({ name, username, password: haspassword, email })
 
     const newuser = await prisma.user.create({
       data: { name, username, password: haspassword, email }
@@ -30,6 +27,8 @@ export const sigupService = async ({ name, username, password, email }: signupTy
 
   }
   catch (error) {
+
+    console.log(error)
 
     return { success: false, message: "Internal server error", statusCode: 500 };
   }
