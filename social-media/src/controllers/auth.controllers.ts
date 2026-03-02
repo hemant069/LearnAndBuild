@@ -26,4 +26,5 @@ try {
     console.error("Signup controller error:", error)
     return errorResponse(res,error,"Internal server error",500)
 }
+
 }
