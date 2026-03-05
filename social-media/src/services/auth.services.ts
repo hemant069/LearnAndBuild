@@ -1,7 +1,7 @@
 
 import { prisma } from "../config/database";
 import { hashPassword } from "../utils/password.util";
-import { signupTypes } from "../types/auth.types";
+import { signupTypes,loginTypes } from "../types/auth.types";
 import { ServiceResult } from "../types/result.types";
 
 export const sigupService = async ({ name, username, password, email }: signupTypes): Promise<ServiceResult<any>> => {
@@ -37,6 +37,14 @@ export const sigupService = async ({ name, username, password, email }: signupTy
 
 
 
-export const loginroute = () => {
+export const loginService = async({email,password}:loginTypes):Promise<ServiceResult<any>> => {
 
+  try {
+
+    
+
+    
+  } catch (error) {
+    
+  }
 }

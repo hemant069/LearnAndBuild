@@ -8,3 +8,9 @@ bio?:string,
 avatar?:string,
 
 }
+
+
+export interface loginTypes{
+    email:string,
+    password:string,
+}

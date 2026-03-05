@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { signupSchema } from "../validators/auth.validators";
+import { loginSchema, signupSchema } from "../validators/auth.validators";
 import { errorResponse, successResponse } from "../utils/response.util";
-import { sigupService } from "../services/auth.services";
+import { loginService, sigupService } from "../services/auth.services";
 
 
 export const sigupController=async(req:Request,res:Response)=>{
@@ -27,4 +27,24 @@ try {
     return errorResponse(res,error,"Internal server error",500)
 }
 
+}
+
+
+export const loginController=async(req:Request,res:Response)=>{
+
+    try {
+
+        const parsedData=loginSchema.safeParse(req.body);
+
+        if(!parsedData.success){
+            return errorResponse(res,parsedData.error,"validation failed",400)
+        }
+
+        const loginuser=await loginService()
+        
+
+
+    } catch (error) {
+        
+    }
 }
