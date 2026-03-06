@@ -1,6 +1,6 @@
 
 import { prisma } from "../config/database";
-import { hashPassword } from "../utils/password.util";
+import { comparePassword, hashPassword } from "../utils/password.util";
 import { signupTypes,loginTypes } from "../types/auth.types";
 import { ServiceResult } from "../types/result.types";
 
@@ -17,7 +17,7 @@ export const sigupService = async ({ name, username, password, email }: signupTy
 
     const haspassword = await hashPassword(password)
 
-    console.log({ name, username, password: haspassword, email })
+    
 
     const newuser = await prisma.user.create({
       data: { name, username, password: haspassword, email }
@@ -42,9 +42,26 @@ export const loginService = async({email,password}:loginTypes):Promise<ServiceRe
   try {
 
     
+      const existingUser= await prisma.user.findFirst({where:{email}});
+
+      if(!existingUser){
+
+       return {success:false,message:"user not found",statusCode:404}
+      }
+
+       const checkpassword= await comparePassword(password,existingUser.password);
+        
+      if(!checkpassword){
+        return {success:false,message:"password is incorrect",statusCode:401}
+      }
+
+      return {success:true,data:"login successfully"}
 
     
   } catch (error) {
+
+    console.log(error)
+    return {success:false,message:"something went wrong",statusCode:500}
     
   }
 }

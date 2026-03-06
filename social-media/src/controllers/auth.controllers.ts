@@ -40,11 +40,22 @@ export const loginController=async(req:Request,res:Response)=>{
             return errorResponse(res,parsedData.error,"validation failed",400)
         }
 
-        const loginuser=await loginService()
+        const loginuser=await loginService(parsedData.data)
+
+       if(!loginuser.success){
+        return errorResponse(res,"something went wrong","something went wrong",500)
+       }
+
+       return successResponse(res,loginuser.data,"login success",200)
+        
         
 
 
     } catch (error) {
+
+    console.log(error);
+
+    return errorResponse(res,error,"something went wrong",500)
         
     }
 }
