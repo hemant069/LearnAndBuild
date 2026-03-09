@@ -9,22 +9,39 @@ export const sigupService = async ({ name, username, password, email }: signupTy
 
   try {
     
-    const existingUser = await prisma.user.findFirst({ where: { email } })
+    const existingUser = await prisma.user.findFirst({ where: {OR:[{email},{username}] } })
 
-    if (existingUser) {
-      return { success: false, message: "user is already exist", statusCode: 400 };
+      if (existingUser) {
+      if (existingUser.email === email) {
+        return { success: false, message: "Email already taken", statusCode: 400 };
+      }
+      if (existingUser.username === username) {
+        return { success: false, message: "Username already taken", statusCode: 400 };
+      }
     }
-
 
     const haspassword = await hashPassword(password)
 
     
 
     const newuser = await prisma.user.create({
-      data: { name, username, password: haspassword, email }
+      data: { name, username, password: haspassword, email },
+      select:{
+          id:true,
+          email:true,
+          username:true,
+          createdAt:true
+      }
     })
 
-    return { success: true, data: newuser }
+    const payload={
+      userId:newuser.id,
+      emailId:newuser.email
+    }
+
+    const token=await generateToken(payload)
+
+    return { success: true, data: {user:newuser,token} }
 
   }
   catch (error) {
@@ -61,7 +78,16 @@ export const loginService = async({email,password}:loginTypes):Promise<ServiceRe
               }
      const token=await generateToken(payload)
 
-     return {success:true,data:token}
+     const user={
+      id:existingUser.id,
+      name:existingUser.name,
+      username:existingUser.username,
+      email:existingUser.email,
+      bio:existingUser.bio,
+      avatar:existingUser.avtaar
+     }
+
+     return {success:true,data:{user,token}}
 
     
   } catch (error) {
@@ -71,3 +97,5 @@ export const loginService = async({email,password}:loginTypes):Promise<ServiceRe
     
   }
 }
+
+

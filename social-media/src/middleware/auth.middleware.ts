@@ -1,35 +1,44 @@
-import { NextFunction, Request, Response } from "express";
-import { errorResponse } from "../utils/response.util";
-import { verifyToken } from "../utils/jwt.util";
-import { env } from "../config/env";
+import { Request, Response, NextFunction } from 'express';
+import { verifyToken } from '../utils/jwt.util';
+import { errorResponse } from '../utils/response.util';
 
+// Extend Express Request to include userId
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      userId?: number;
+      userEmail?: string;
     }
   }
 }
 
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get token from header
+    const authHeader = req.headers.authorization;
 
-export const authverifyToken=(req:Request,res:Response,next:NextFunction)=>{
-
-    const token=req.header('Authorization');
-
-    if(!token){
-        return errorResponse(res,"Access denied ","No token provide",401)
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return errorResponse(res, 'No token provided', 401);
     }
 
-    try {
-        
-        const actualToken =token.split("")[1];
-        const decoded= verifyToken(actualToken);
-        req.user=decoded;
-        next();
-    } catch (error) {
-        
-        console.log("auth verification error",error);
+    // Extract token (remove "Bearer " prefix)
+    const token = authHeader.split(' ')[1];
 
-    }
+    // Verify token
+    const decoded = verifyToken(token);
 
-}
+    // Attach user info to request
+    req.userId = decoded.userId;
+    req.userEmail = decoded.emailId;
+
+    // Continue to next middleware/controller
+    next();
+
+  } catch (error) {
+    return errorResponse(res, 'Invalid or expired token', 401);
+  }
+};
