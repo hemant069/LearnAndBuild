@@ -1,5 +1,5 @@
 export interface JWTPAYLOAD{
-    userId:string,
+    userId:number,
     emailId:string
 }
 

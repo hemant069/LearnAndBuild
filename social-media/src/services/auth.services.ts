@@ -3,6 +3,7 @@ import { prisma } from "../config/database";
 import { comparePassword, hashPassword } from "../utils/password.util";
 import { signupTypes,loginTypes } from "../types/auth.types";
 import { ServiceResult } from "../types/result.types";
+import { generateToken } from "../utils/jwt.util";
 
 export const sigupService = async ({ name, username, password, email }: signupTypes): Promise<ServiceResult<any>> => {
 
@@ -54,8 +55,13 @@ export const loginService = async({email,password}:loginTypes):Promise<ServiceRe
       if(!checkpassword){
         return {success:false,message:"password is incorrect",statusCode:401}
       }
+    const payload={
+              userId:existingUser.id,
+              emailId:existingUser.email
+              }
+     const token=await generateToken(payload)
 
-      return {success:true,data:"login successfully"}
+     return {success:true,data:token}
 
     
   } catch (error) {
