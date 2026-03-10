@@ -1,12 +1,11 @@
 
 import { Router } from "express";
 import { authenticate } from "../middleware/auth.middleware";
+import { userProfile } from "../controllers/user.controllers";
 
 
 const userRouter=Router();
 
-userRouter.get('/me',authenticate,(req,res)=>{
-    return res.json("Hii There")
-})
+userRouter.get("/:id",authenticate,userProfile)
 
 export default userRouter
