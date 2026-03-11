@@ -4,8 +4,14 @@ import { authenticate } from "../middleware/auth.middleware";
 import { userProfile } from "../controllers/user.controllers";
 
 
-const userRouter=Router();
+// need this to fix 
 
-userRouter.get("/:id",authenticate,userProfile)
+const userRouter = Router();
+userRouter.get("/me", authenticate, async (req, res) => {
+    req.params.id = req.userId!.toString();
+    return userProfile(req, res);
+})
+userRouter.get("/:id", userProfile)
+
 
 export default userRouter
