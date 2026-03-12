@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/response.util";
-import { userProfileService } from "../services/user.services";
+import { updateuserProfile, userProfileService } from "../services/user.services";
+import { userSchema } from "../validators/user.validators";
 
 
 export const userProfile = async (req: Request, res: Response) => {
@@ -41,8 +42,29 @@ export const getProfile=async(req:Request,res:Response)=>{
 
 export const updateProfile=async(req:Request,res:Response)=>{
   try {
-    
+    const parsedData= userSchema.safeParse(req.body);
+
+    if(parsedData.error){
+      return errorResponse(res,parsedData.error,400)
+    }
+
+    if(!req.userId){
+      return errorResponse(res,"user is not found",404)
+    }
+
+
+    const result = await updateuserProfile(parsedData.data)
+
+    if(!result.success){
+      return errorResponse(res,"something went wrong",result.statusCode)
+    }
+
+    return successResponse(res,result.data,result.success,200)
+
+
   } catch (error) {
+
+    console.error("something wrong with update user profile",error)
     
   }
 }
