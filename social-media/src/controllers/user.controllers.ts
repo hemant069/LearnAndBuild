@@ -26,3 +26,23 @@ export const userProfile = async (req: Request, res: Response) => {
     return errorResponse(res, "Internal server error", 500);
   }
 };
+
+export const getProfile=async(req:Request,res:Response)=>{
+  try {
+     req.params.id = req.userId!.toString();
+        return userProfile(req, res);
+  } catch (error) {
+
+    console.error("User profile controller error for get profile",error);
+    return errorResponse(res,"Intenal server error",500)
+    
+  }
+}
+
+export const updateProfile=async(req:Request,res:Response)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
