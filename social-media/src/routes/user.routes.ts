@@ -7,9 +7,10 @@ import { getProfile, updateProfile, userProfile ,userSearch} from "../controller
 
 const userRouter = Router();
 userRouter.get("/me", authenticate, getProfile)
-userRouter.put("/me",authenticate,updateProfile)
-userRouter.get("/:id", userProfile)
 userRouter.get('/search',userSearch)
+userRouter.get("/:id", userProfile)
+userRouter.put("/me",authenticate,updateProfile)
+
 
 
 export default userRouter

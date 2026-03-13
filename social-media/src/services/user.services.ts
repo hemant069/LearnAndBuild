@@ -79,3 +79,28 @@ export const updateuserProfile=async({name,email,username,bio,avatar}:userTypes)
         
     }
 }
+
+
+export const userSearchService=async(query:string):Promise<ServiceResult<any>>=>{
+
+    try {
+        
+        const user= await prisma.user.findMany({where:{OR:[
+            {username:{contains:query,mode:"insensitive"}},
+            {name:{contains:query,mode:"insensitive"}}
+        ]},
+        
+        select:{name:true,username:true,bio:true,avtaar:true,email:true},
+        take:20
+    });
+
+       
+
+        return {success:true,data:user,}
+    } catch (error) {
+
+        console.error("something went wrong with user search services",error)
+        return {success:false,statusCode:500,message:error as string}
+        
+    }
+}

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/response.util";
-import { updateuserProfile, userProfileService } from "../services/user.services";
+import { updateuserProfile, userProfileService, userSearchService } from "../services/user.services";
 import { userSchema } from "../validators/user.validators";
 
 
@@ -73,11 +73,29 @@ export const updateProfile=async(req:Request,res:Response)=>{
 export const userSearch=async(req:Request,res:Response)=>{
   try {
     
-    const query=req.query;
+    const query=req.query.q as string;
 
-    console.log(query)
+   if(!query || query.trim()===''){
+    return errorResponse(res,"something went wrong",500);
+   }
+
+   if(query.length<2){
+    return errorResponse(res,"search query must have length greater then 2")
+   }
+
+   const result = await userSearchService(query);
+
+   if(!result.success){
+    return errorResponse(res,"something went wrong ",result.success,result.statusCode)
+   }
+
+   return successResponse(res,result.data,"user found",200)
+
+
 
   } catch (error) {
+
+    console.log("user search query error",error)
     
   }
 }
