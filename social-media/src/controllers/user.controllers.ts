@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/response.util";
-import { updateuserProfile, userProfileService, userSearchService } from "../services/user.services";
+import { updateuserProfile, userFollowService, userProfileService, userSearchService } from "../services/user.services";
 import { userSchema } from "../validators/user.validators";
 
 
@@ -96,6 +96,42 @@ export const userSearch=async(req:Request,res:Response)=>{
   } catch (error) {
 
     console.log("user search query error",error)
+    
+  }
+}
+
+
+// userFollow,usersFollower,usersFollowing
+
+export const userFollow=async(req:Request,res:Response)=>{
+  try {
+    const targetUserId=parseInt(req.params.id);
+    const userId=parseInt(req.userId)
+
+   
+
+
+    const result=await userFollowService(targetUserId,userId)
+    console.log(result)
+    
+  } catch (error) {
+
+    console.error("Invaild user ",error)
+    
+  }
+}
+
+export const usersFollower=async(req:Request,res:Response)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+export const usersFollowing=async(req:Request,res:Response)=>{
+  try {
+    
+  } catch (error) {
     
   }
 }

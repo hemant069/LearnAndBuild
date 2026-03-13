@@ -104,3 +104,30 @@ export const userSearchService=async(query:string):Promise<ServiceResult<any>>=>
         
     }
 }
+
+
+export const userFollowService=async(targetUserId:number,userId:number):Promise<ServiceResult<any>>=>{
+    try {
+        
+        console.log(targetUserId,userId)
+        
+        const existingUser=await prisma.user.findFirst({where:{id:targetUserId}});
+
+        if(!existingUser){
+            return {success:false,message:"invaild user",statusCode:404};
+        }
+
+        console.log(existingUser)
+        // const follow= await prisma.follow.create({
+        //     data:{followersId:userId,followingsId:targetUserId}
+        // })
+
+        // return {success:true,data:follow};
+
+    } catch (error) {
+
+        console.error("something went wrong with userFollowservice",error)
+        return {success:false,message:"Internal server error",statusCode:500}
+        
+    }
+}
