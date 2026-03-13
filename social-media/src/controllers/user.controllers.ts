@@ -68,3 +68,16 @@ export const updateProfile=async(req:Request,res:Response)=>{
     
   }
 }
+
+
+export const userSearch=async(req:Request,res:Response)=>{
+  try {
+    
+    const query=req.query;
+
+    console.log(query)
+
+  } catch (error) {
+    
+  }
+}
