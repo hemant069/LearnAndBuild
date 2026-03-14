@@ -1,3 +1,4 @@
+import { fa } from "zod/v4/locales";
 import { prisma } from "../config/database"
 import { ServiceResult } from "../types/result.types";
 import { userTypes } from "../types/user.types";
@@ -109,7 +110,10 @@ export const userSearchService=async(query:string):Promise<ServiceResult<any>>=>
 export const userFollowService=async(targetUserId:number,userId:number):Promise<ServiceResult<any>>=>{
     try {
         
-        console.log(targetUserId,userId)
+       
+        if(userId===targetUserId){
+            return {success:false,message:"Can't follow yourself",statusCode:400}
+        }
         
         const existingUser=await prisma.user.findFirst({where:{id:targetUserId}});
 
@@ -117,12 +121,22 @@ export const userFollowService=async(targetUserId:number,userId:number):Promise<
             return {success:false,message:"invaild user",statusCode:404};
         }
 
-        console.log(existingUser)
-        // const follow= await prisma.follow.create({
-        //     data:{followersId:userId,followingsId:targetUserId}
-        // })
+        const alreadyFollowing=await prisma.follow.findFirst({where:{AND:[
+            {followersId:userId},
+            {followingsId:targetUserId}
+        ]}})
 
-        // return {success:true,data:follow};
+        if(alreadyFollowing){
+            return {success:false,message:"already following",statusCode:401}
+        }
+
+
+
+        const follow= await prisma.follow.create({
+            data:{followersId:userId,followingsId:targetUserId}
+        })
+
+        return {success:true,data:follow};
 
     } catch (error) {
 
