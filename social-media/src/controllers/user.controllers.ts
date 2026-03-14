@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/response.util";
-import { updateuserProfile, userFollowService, userProfileService, userSearchService } from "../services/user.services";
+import { updateuserProfile, userFollowerService, userFollowService, userProfileService, userSearchService, userUnfollowService } from "../services/user.services";
 import { userSchema } from "../validators/user.validators";
 
 
@@ -108,23 +108,63 @@ export const userFollow=async(req:Request,res:Response)=>{
     const targetUserId=parseInt(req.params.id);
     const userId=parseInt(req.userId)
 
-   
-
-
     const result=await userFollowService(targetUserId,userId)
-    console.log(result)
+   
+    if(!result.success){
+      return errorResponse(res,result.message,result.statusCode)
+    }
+
+    return successResponse(res,result.data,200)
     
   } catch (error) {
 
-    console.error("Invaild user ",error)
+    console.error("internal server error  ",error)
+
+    return errorResponse(res,"internal server error",error,500)
+    
+  }
+}
+
+export const userUnFollow=async(req:Request,res:Response)=>{
+  try {
+    const targetUserId=parseInt(req.params.id);
+    const userId=parseInt(req.userId)
+
+    const result=await userUnfollowService(targetUserId,userId)
+   
+    if(!result.success){
+      return errorResponse(res,result.message,result.statusCode)
+    }
+
+    return successResponse(res,result.data,200)
+
+    
+  } catch (error) {
     
   }
 }
 
 export const usersFollower=async(req:Request,res:Response)=>{
   try {
+
+    const userId=parseInt(req.params.id)
+
+    const result= await userFollowerService(userId);
+
+    console.log(result)
+
+    // if(!result.success){
+    //   return errorResponse(res,result.success,500)
+    // }
+
+    // return successResponse(res,result.data,200)
     
+
+
   } catch (error) {
+
+    console.error("internal server error",error)
+    return errorResponse(res,"internal server error",500)
     
   }
 }

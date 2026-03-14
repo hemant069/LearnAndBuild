@@ -114,7 +114,7 @@ export const userFollowService=async(targetUserId:number,userId:number):Promise<
         if(userId===targetUserId){
             return {success:false,message:"Can't follow yourself",statusCode:400}
         }
-        
+
         const existingUser=await prisma.user.findFirst({where:{id:targetUserId}});
 
         if(!existingUser){
@@ -143,5 +143,27 @@ export const userFollowService=async(targetUserId:number,userId:number):Promise<
         console.error("something went wrong with userFollowservice",error)
         return {success:false,message:"Internal server error",statusCode:500}
         
+    }
+}
+
+
+export const userFollowerService=async(userId:number):Promise<ServiceResult<any>>=>{
+    try {
+        
+        const existingUser= await prisma.user.findFirst({where:{id:userId}})
+        
+        if(!existingUser){
+            return {success:false,message:"user is not found",statusCode:404}
+        }
+
+        const totalfollowers= await prisma.follow.count()
+
+        console.log(totalfollowers)
+
+
+    } catch (error) {
+
+        console.error("internal server error",error)
+        return {success:false,message:error,statusCode:500}
     }
 }
